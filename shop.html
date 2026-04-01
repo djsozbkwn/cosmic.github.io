@@ -1,227 +1,151 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMIC</title>
+    <title>Cosmic | Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Quicksand:wght@500;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        /* Shared Styles (Identical to Hub for consistency) */
+        body { transition: background 0.4s ease, color 0.4s ease; min-height: 100vh; overflow-x: hidden; margin: 0; position: relative;}
+        .sys-card, .sys-btn, .sys-nav, .sys-dropdown { transition: all 0.3s ease; }
+        .mesh-bg, .aurora-blobs { display: none; }
+
+        body.theme-cosmic { background: #030305 radial-gradient(circle at 50% 0%, #0f172a 0%, #030305 80%); color: #fff; font-family: 'Space Grotesk', sans-serif; }
+        .theme-cosmic .sys-nav { background: transparent; padding: 2rem 1.5rem; }
+        .theme-cosmic .sys-card { background: rgba(15,15,20,0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem; }
+        .theme-cosmic .sys-btn { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; border-radius: 0.75rem; border: none; font-weight: bold; }
+        .theme-cosmic .sys-title { color: #fff; }
+        .theme-cosmic .sys-sub { color: #9ca3af; }
+        .theme-cosmic .sys-badge { background: #000; border: 1px solid #222; color: #a78bfa; border-radius: 0.5rem; padding: 0.5rem 1rem; font-weight: 800; font-size: 0.75rem;}
+
+        body.theme-aero { background: radial-gradient(circle at 10% 20%, rgba(56,189,248,0.6) 0%, transparent 40%), linear-gradient(180deg, #e0f2fe 0%, #7dd3fc 40%, #4ade80 100%); background-attachment: fixed; color: #0c4a6e; font-family: 'Quicksand', sans-serif; }
+        .theme-aero .sys-nav { background: rgba(255,255,255,0.3); backdrop-filter: blur(15px); border-radius: 2rem; border: 1px solid rgba(255,255,255,0.6); padding: 1rem 1.5rem; margin-top: 1rem; }
+        .theme-aero .sys-card { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.7); border-radius: 2rem; padding: 2.5rem; }
+        .theme-aero .sys-btn { background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%); border: 2px solid rgba(255,255,255,0.5); border-radius: 50px; color: white; }
+        .theme-aero .sys-title { color: #082f49; }
+        .theme-aero .sys-sub { color: #0369a1; }
+        .theme-aero .sys-badge { background: rgba(255,255,255,0.7); border: 1px solid white; color: #0284c7; border-radius: 1rem; padding: 0.5rem 1rem; font-weight: 800; font-size: 0.75rem;}
+
+        body.theme-ios { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
+        .theme-ios .mesh-bg { display: block; position: fixed; inset: 0; background: radial-gradient(circle at 80% 20%, #1e1b4b 0%, transparent 40%), radial-gradient(circle at 20% 80%, #312e81 0%, transparent 40%); z-index: -1; }
+        .theme-ios .sys-nav { background: transparent; padding: 2rem 1.5rem; }
+        .theme-ios .sys-card { background: rgba(28,28,30,0.45); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 2.5rem; padding: 2rem; }
+        .theme-ios .sys-btn { background: #fff; color: #000; border-radius: 50px; font-weight: 700; border: none; }
+        .theme-ios .sys-title { color: #fff; font-weight: 800; }
+        .theme-ios .sys-sub { color: rgba(255,255,255,0.5); }
+        .theme-ios .sys-badge { background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.1); color: #fff; border-radius: 12px; padding: 0.5rem 1rem; font-weight: 800; font-size: 0.75rem;}
+
+        body.theme-surprise { background: #0f172a; color: #fff; font-family: 'Inter', sans-serif; }
+        .theme-surprise .aurora-blobs { display: block; position: fixed; inset: 0; z-index: -1; overflow: hidden; filter: blur(80px); }
+        .blob { position: absolute; border-radius: 50%; opacity: 0.6; animation: move 20s infinite alternate; }
+        .blob-1 { width: 500px; height: 500px; background: #3b82f6; top: -10%; left: -10%; }
+        .blob-2 { width: 600px; height: 600px; background: #a855f7; bottom: -10%; right: -10%; animation-delay: -5s; }
+        .blob-3 { width: 400px; height: 400px; background: #06b6d4; top: 40%; left: 30%; animation-delay: -10s; }
+        @keyframes move { from { transform: translate(0, 0); } to { transform: translate(100px, 100px); } }
         
-        :root { --bg-main: #020204; }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--bg-main); 
-            color: #ffffff; 
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        .galaxy-bg { 
-            position: fixed; 
-            inset: 0; 
-            background: radial-gradient(circle at 50% -20%, #1a103d 0%, #020204 60%); 
-            z-index: -1; 
-        }
-        
-        .nebula-purple { 
-            position: absolute; 
-            width: 800px; 
-            height: 800px; 
-            background: radial-gradient(circle, rgba(147, 51, 234, 0.12) 0%, transparent 70%); 
-            filter: blur(100px); 
-            top: -200px; 
-            right: -200px; 
-            pointer-events: none; 
-        }
-
-        .nebula-blue { 
-            position: absolute; 
-            width: 600px; 
-            height: 600px; 
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%); 
-            filter: blur(100px); 
-            bottom: -100px; 
-            left: -100px; 
-            pointer-events: none; 
-        }
-
-        .shop-card { 
-            background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 32px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .shop-card:hover { 
-            background: rgba(255, 255, 255, 0.04); 
-            border-color: rgba(147, 51, 234, 0.4); 
-            transform: translateY(-8px); 
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-        }
-
-        .price-tag {
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(147, 51, 234, 0.1);
-            color: #c084fc;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        .btn-purchase {
-            background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-purchase:hover {
-            filter: brightness(1.2);
-            box-shadow: 0 0 25px rgba(147, 51, 234, 0.5);
-            transform: scale(1.02);
-        }
-
-        .status-badge {
-            font-size: 9px;
-            font-weight: 900;
-            letter-spacing: 0.2em;
-            padding: 4px 12px;
-            border-radius: 100px;
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .shop-card h3 {
-            font-size: 1.35rem;
-            letter-spacing: -0.02em;
-        }
-
-        .shop-card p {
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
+        .theme-surprise .sys-nav { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; margin-top: 1.5rem; padding: 0.75rem 1.5rem; }
+        .theme-surprise .sys-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(30px) saturate(180%); border: 1px solid rgba(255,255,255,0.2); border-radius: 30px; padding: 2.5rem; }
+        .theme-surprise .sys-btn { background: rgba(255,255,255,0.9); color: #000; border-radius: 20px; font-weight: 800; border: none; }
+        .theme-surprise .sys-title { background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .theme-surprise .sys-sub { color: rgba(255,255,255,0.6); }
+        .theme-surprise .sys-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #3b82f6; font-weight: 800; border-radius: 15px; padding: 0.5rem 1rem; font-size: 0.75rem;}
+        .theme-surprise .sys-dropdown { background: rgba(15,23,42,0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: white; }
     </style>
 </head>
-<body class="pb-24">
-
-    <div class="galaxy-bg">
-        <div class="nebula-purple"></div>
-        <div class="nebula-blue"></div>
+<body class="theme-cosmic">
+    <div class="mesh-bg"></div>
+    <div class="aurora-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
+    <!-- Navigation -->
+    <nav class="max-w-6xl mx-auto sys-nav flex justify-between items-center mb-12 relative z-50">
+        <div class="flex items-center gap-3">
+            <i data-lucide="shopping-cart" class="w-6 h-6 sys-title"></i>
+            <span class="text-2xl font-bold sys-title">COSMIC</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="index.html" class="sys-sub hover:opacity-80 font-bold text-sm transition">HUB</a>
+            <a href="shop.html" class="sys-title font-bold text-sm">SHOP</a>
+            
+            <div class="relative">
+                <button onclick="toggleThemeMenu()" class="sys-btn px-5 py-2 text-xs flex items-center gap-2">
+                    <i data-lucide="palette" class="w-4 h-4"></i> THEME
+                </button>
+                <div id="theme-menu" class="sys-dropdown absolute right-0 mt-3 w-48 flex-col hidden overflow-hidden shadow-2xl z-50">
+                    <button onclick="setTheme('theme-cosmic')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10">Default</button>
+                    <button onclick="setTheme('theme-aero')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10 border-t border-white/5">Frutiger Aero</button>
+                    <button onclick="setTheme('theme-ios')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10 border-t border-white/5">Glass Blur</button>
+                    <button onclick="setTheme('theme-surprise')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10 border-t border-white/5 text-blue-400 font-bold">???</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <!-- Header -->
-    <header class="w-full max-w-7xl mx-auto px-8 py-12 flex flex-col md:flex-row justify-between items-center relative z-10 gap-8">
-        <div class="flex items-center gap-5">
-            <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-purple-900/40">
-                <i data-lucide="zap" class="w-7 h-7 text-white"></i>
-            </div>
-            <div>
-                <h1 class="text-3xl font-black tracking-tighter uppercase leading-none">COSMIC</h1>
-                <p class="text-[10px] font-bold text-white/20 uppercase tracking-[0.5em] mt-1"> Welcome</p>
-            </div>
-        </div>
-        
-        <div class="flex items-center gap-4 bg-white/[0.03] border border-white/5 px-8 py-4 rounded-3xl backdrop-blur-xl">
-            <div class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_#9333ea]"></div>
-            <span class="text-[11px] font-black uppercase tracking-widest text-white/40">Marketplace</span>
-        </div>
+    <header class="max-w-4xl mx-auto px-6 text-center mb-20">
+        <h1 class="text-5xl md:text-7xl font-bold sys-title mb-6 tracking-tight">Marketplace.</h1>
+        <p class="text-lg sys-sub max-w-2xl mx-auto font-medium">Exclusive assets and professional script development services.</p>
     </header>
 
-    <!-- Marketplace Grid -->
-    <main class="max-w-7xl mx-auto px-8 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Shop Grid -->
+    <main class="max-w-6xl mx-auto px-6 pb-32">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <!-- [01] Brainrot Notifier -->
-            <div class="shop-card p-10 group">
-                <div class="flex justify-between items-start mb-10">
-                    <span class="text-white/10 font-black text-5xl">01</span>
-                    <div class="status-badge">ONLINE</div>
-                </div>
-                <h3 class="font-black mb-4 group-hover:text-purple-400 transition-colors">Brainrot Notifier</h3>
-                <p class="text-white/40 mb-12 flex-grow">Advanced bot system, 116 bots online. Optimized for maximum coverage and reliability.</p>
-                <div class="flex items-center justify-between pt-8 border-t border-white/5">
-                    <div class="price-tag">1,500 R$</div>
-                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="btn-purchase px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest">Acquire</a>
+            <div class="sys-card flex flex-col">
+                <h3 class="text-2xl font-bold sys-title mb-2">Brainrot Notifier</h3>
+                <p class="sys-sub text-sm mb-12 flex-grow">A high-performance alert system with 116 tracking nodes. Never miss a drop.</p>
+                <div class="flex items-center justify-between mt-auto">
+                    <div class="sys-badge">1,500 R$</div>
+                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="sys-btn px-8 py-3.5 text-[10px] font-bold tracking-widest uppercase">Purchase</a>
                 </div>
             </div>
 
-            <!-- [02] Private Server Link Leaker -->
-            <div class="shop-card p-10 group">
-                <div class="flex justify-between items-start mb-10">
-                    <span class="text-white/10 font-black text-5xl">02</span>
-                    <div class="status-badge">DIRECT</div>
-                </div>
-                <h3 class="font-black mb-4 group-hover:text-blue-400 transition-colors">Private Server Leaker</h3>
-                <p class="text-white/40 mb-12 flex-grow">Instant access to restricted instances. Bypass gatekeeping and access premium server links.</p>
-                <div class="flex items-center justify-between pt-8 border-t border-white/5">
-                    <div class="price-tag">1,000 R$</div>
-                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="btn-purchase px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest">Acquire</a>
+            <div class="sys-card flex flex-col">
+                <h3 class="text-2xl font-bold sys-title mb-2">Source Vault</h3>
+                <p class="sys-sub text-sm mb-12 flex-grow">Lifetime access to an archive of 13,000+ raw and deobfuscated scripts.</p>
+                <div class="flex items-center justify-between mt-auto">
+                    <div class="sys-badge">1,500 R$</div>
+                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="sys-btn px-8 py-3.5 text-[10px] font-bold tracking-widest uppercase">Unlock</a>
                 </div>
             </div>
 
-            <!-- [03] 13,000 Source Leaks -->
-            <div class="shop-card p-10 group border-purple-500/20 bg-purple-500/[0.04]">
-                <div class="flex justify-between items-start mb-10">
-                    <span class="text-purple-500/20 font-black text-5xl">03</span>
-                    <div class="status-badge bg-purple-500/20 text-purple-300 border-purple-500/30">PREMIUM</div>
-                </div>
-                <h3 class="font-black mb-4 text-purple-100">13,000 Source Leaks</h3>
-                <p class="text-white/40 mb-12 flex-grow">Massive vault of leaked/deobfuscated sources. Includes uncopylocked SAB and rare paid assets.</p>
-                <div class="flex items-center justify-between pt-8 border-t border-white/10">
-                    <div class="price-tag">1,500 R$</div>
-                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="btn-purchase px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest">Access Vault</a>
-                </div>
-            </div>
-
-            <!-- [04] Infinite Key Duration -->
-            <div class="shop-card p-10 group">
-                <div class="flex justify-between items-start mb-10">
-                    <span class="text-white/10 font-black text-5xl">04</span>
-                    <div class="status-badge text-yellow-500 border-yellow-500/20">PERMANENT</div>
-                </div>
-                <h3 class="font-black mb-4 group-hover:text-yellow-400 transition-colors">Infinite Key Time</h3>
-                <p class="text-white/40 mb-12 flex-grow">Only one user access. One-time payment to remove all license expirations forever.</p>
-                <div class="flex items-center justify-between pt-8 border-t border-white/5">
-                    <div class="price-tag text-yellow-500 bg-yellow-500/10 border-yellow-500/10">500 R$</div>
-                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="btn-purchase px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest">Upgrade</a>
-                </div>
-            </div>
-
-            <!-- [05] Custom Script Commission -->
-            <div class="shop-card p-10 md:col-span-2 group">
-                <div class="flex justify-between items-start mb-10">
-                    <div class="flex gap-6">
-                        <span class="text-white/10 font-black text-5xl leading-none">05</span>
-                        <div class="flex flex-col justify-center">
-                            <h3 class="font-black group-hover:text-emerald-400 transition-colors leading-none">Custom Script Commission</h3>
-                            <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-2">Professional Development</p>
-                        </div>
-                    </div>
-                    <div class="status-badge text-emerald-500 border-emerald-500/20">REQUESTS OPEN</div>
-                </div>
-                <p class="text-white/40 mb-12 flex-grow">Custom development. Worked to your exact specifications. High-end optimization, clean logic, and full post-delivery support for any complex task.</p>
-                <div class="flex items-center justify-between pt-8 border-t border-white/5">
-                    <div class="price-tag">500 - 1,000+ R$</div>
-                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="btn-purchase px-12 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest">Commission</a>
+            <div class="sys-card flex flex-col">
+                <h3 class="text-2xl font-bold sys-title mb-2">Commission</h3>
+                <p class="sys-sub text-sm mb-12 flex-grow">Custom development for your specific requirements. High-end logic and support.</p>
+                <div class="flex items-center justify-between mt-auto">
+                    <div class="sys-badge">500+ R$</div>
+                    <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="sys-btn px-8 py-3.5 text-[10px] font-bold tracking-widest uppercase">Hire</a>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <footer class="max-w-7xl mx-auto px-8 mt-24 text-center relative z-10 pb-16">
-        <p class="text-[10px] font-black text-white/5 uppercase tracking-[0.6em]">End of Transmission // Cosmic marketplace</p>
-    </footer>
-
     <script>
+        function setTheme(theme) {
+            document.body.classList.remove('theme-cosmic', 'theme-aero', 'theme-ios', 'theme-surprise');
+            document.body.classList.add(theme);
+            localStorage.setItem('cosmic-active-theme', theme);
+            document.getElementById('theme-menu').classList.add('hidden');
+        }
+
+        function toggleThemeMenu() { document.getElementById('theme-menu').classList.toggle('hidden'); }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) document.getElementById('theme-menu').classList.add('hidden');
+        });
+
+        const savedTheme = localStorage.getItem('cosmic-active-theme') || 'theme-cosmic';
+        document.body.classList.remove('theme-cosmic');
+        document.body.classList.add(savedTheme);
+
         lucide.createIcons();
     </script>
 </body>
