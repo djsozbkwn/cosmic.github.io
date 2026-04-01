@@ -1,457 +1,164 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic | Script Hub</title>
+    <title>Cosmic | Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Quicksand:wght@500;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #030305; 
-            color: #ffffff; 
-            font-family: 'Space Grotesk', sans-serif; 
-            margin: 0;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, #030305 80%);
-        }
+        /* === BASE TRANSITIONS === */
+        body { transition: background 0.4s ease, color 0.4s ease; min-height: 100vh; overflow-x: hidden; margin: 0; position: relative;}
+        .sys-card, .sys-btn, .sys-nav, .sys-dropdown { transition: all 0.3s ease; }
+        .mesh-bg, .aurora-blobs { display: none; }
 
-        .glass-panel {
-            background: rgba(15, 15, 20, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
+        /* === 1. COSMIC THEME === */
+        body.theme-cosmic { background: #030305 radial-gradient(circle at 50% 0%, #0f172a 0%, #030305 80%); color: #fff; font-family: 'Space Grotesk', sans-serif; }
+        .theme-cosmic .sys-nav { background: transparent; padding: 2rem 1.5rem; }
+        .theme-cosmic .sys-card { background: rgba(15,15,20,0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; padding: 2rem; }
+        .theme-cosmic .sys-btn { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; border-radius: 0.75rem; border: none; font-weight: bold; }
+        .theme-cosmic .sys-title { color: #fff; }
+        .theme-cosmic .sys-sub { color: #9ca3af; }
+        .theme-cosmic .sys-badge { background: #000; border: 1px solid #222; color: #a78bfa; border-radius: 0.5rem; padding: 0.75rem; font-family: monospace; font-size: 0.75rem;}
+        .theme-cosmic .sys-dropdown { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; color: white; }
+
+        /* === 2. FRUTIGER AERO THEEME === */
+        body.theme-aero { background: radial-gradient(circle at 10% 20%, rgba(56,189,248,0.6) 0%, transparent 40%), linear-gradient(180deg, #e0f2fe 0%, #7dd3fc 40%, #4ade80 100%); background-attachment: fixed; color: #0c4a6e; font-family: 'Quicksand', sans-serif; }
+        .theme-aero .sys-nav { background: rgba(255,255,255,0.3); backdrop-filter: blur(15px); border-radius: 2rem; border: 1px solid rgba(255,255,255,0.6); padding: 1rem 1.5rem; margin-top: 1rem; }
+        .theme-aero .sys-card { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.7); border-radius: 2rem; padding: 2.5rem; }
+        .theme-aero .sys-btn { background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%); border: 2px solid rgba(255,255,255,0.5); border-radius: 50px; color: white; }
+        .theme-aero .sys-title { color: #082f49; }
+        .theme-aero .sys-sub { color: #0369a1; }
+        .theme-aero .sys-badge { background: rgba(255,255,255,0.7); border: 1px solid white; color: #0284c7; border-radius: 1rem; padding: 0.75rem; font-size: 0.75rem;}
+        .theme-aero .sys-dropdown { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); border-radius: 1rem; color: #082f49; }
+
+        /* === 3. GLASS BLUR THEME === */
+        body.theme-ios { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
+        .theme-ios .mesh-bg { display: block; position: fixed; inset: 0; background: radial-gradient(circle at 80% 20%, #1e1b4b 0%, transparent 40%), radial-gradient(circle at 20% 80%, #312e81 0%, transparent 40%); z-index: -1; }
+        .theme-ios .sys-nav { background: transparent; padding: 2rem 1.5rem; }
+        .theme-ios .sys-card { background: rgba(28,28,30,0.45); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 2.5rem; padding: 2rem; }
+        .theme-ios .sys-btn { background: #fff; color: #000; border-radius: 50px; font-weight: 700; border: none; }
+        .theme-ios .sys-title { color: #fff; font-weight: 800; }
+        .theme-ios .sys-sub { color: rgba(255,255,255,0.5); }
+        .theme-ios .sys-badge { background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.1); color: #fff; border-radius: 12px; padding: 0.75rem; font-size: 0.75rem;}
+
+        /* === 4. AURORA SURPRISE (GLASSMORPHISM MAX) === */
+        body.theme-surprise { background: #0f172a; color: #fff; font-family: 'Inter', sans-serif; }
+        .theme-surprise .aurora-blobs { display: block; position: fixed; inset: 0; z-index: -1; overflow: hidden; filter: blur(80px); }
+        .blob { position: absolute; border-radius: 50%; opacity: 0.6; animation: move 20s infinite alternate; }
+        .blob-1 { width: 500px; height: 500px; background: #3b82f6; top: -10%; left: -10%; }
+        .blob-2 { width: 600px; height: 600px; background: #a855f7; bottom: -10%; right: -10%; animation-delay: -5s; }
+        .blob-3 { width: 400px; height: 400px; background: #06b6d4; top: 40%; left: 30%; animation-delay: -10s; }
+        @keyframes move { from { transform: translate(0, 0); } to { transform: translate(100px, 100px); } }
         
-        .glass-panel:hover {
-            border-color: rgba(139, 92, 246, 0.3);
-            background: rgba(15, 15, 20, 0.6);
-        }
-
-        .btn-gradient {
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            transition: all 0.3s ease;
-        }
-
-        .btn-gradient:hover {
-            filter: brightness(1.1);
-            transform: translateY(-1px);
-            box-shadow: 0 10px 20px -10px rgba(168, 85, 247, 0.5);
-        }
-
-        .script-container {
-            background: #000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 12px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .script-box {
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
-            color: #a78bfa;
-            word-break: break-all;
-            white-space: pre-wrap;
-            background: transparent;
-            border: none;
-            width: 100%;
-        }
-
-        .discord-glow {
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.1);
-            border: 1px solid rgba(88, 101, 242, 0.3);
-            cursor: pointer;
-        }
-        
-        .discord-glow:hover {
-            background: rgba(88, 101, 242, 0.15);
-            box-shadow: 0 0 30px rgba(88, 101, 242, 0.3);
-        }
-
-        .shop-nav-btn {
-            background: rgba(168, 85, 247, 0.1);
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .shop-nav-btn:hover {
-            background: rgba(168, 85, 247, 0.2);
-            border-color: rgba(168, 85, 247, 0.5);
-            transform: scale(1.05);
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .theme-surprise .sys-nav { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; margin-top: 1.5rem; padding: 0.75rem 1.5rem; }
+        .theme-surprise .sys-card { background: rgba(255,255,255,0.03); backdrop-filter: blur(30px) saturate(180%); border: 1px solid rgba(255,255,255,0.2); border-radius: 30px; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .theme-surprise .sys-card:hover { border-color: rgba(255,255,255,0.4); transform: scale(1.02); }
+        .theme-surprise .sys-btn { background: rgba(255,255,255,0.9); color: #000; border-radius: 20px; font-weight: 800; border: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .theme-surprise .sys-title { background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        .theme-surprise .sys-sub { color: rgba(255,255,255,0.6); }
+        .theme-surprise .sys-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #3b82f6; font-weight: 700; border-radius: 15px; padding: 0.75rem; font-size: 0.75rem;}
+        .theme-surprise .sys-dropdown { background: rgba(15,23,42,0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: white; }
     </style>
 </head>
-<body class="min-h-screen scrollbar-hide">
+<body class="theme-cosmic">
+    <div class="mesh-bg"></div>
+    <div class="aurora-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
-    <!-- Navbar -->
-    <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center relative z-50">
-        <div class="text-2xl font-bold tracking-tighter">COSMIC</div>
-        <div class="flex items-center gap-4">
-            <a href="https://cosmicsys.vercel.app/shop.html" class="shop-nav-btn flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-purple-300 transition">
-                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">MARKETPLACE</span>
-            </a>
-            <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="hidden sm:flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
-                Discord
-            </a>
-            <a href="gateway.html" class="px-5 py-2 rounded-xl text-sm font-semibold glass-panel hover:bg-white/10 transition">
-                Get Key
-            </a>
+    <!-- Navigation -->
+    <nav class="max-w-6xl mx-auto sys-nav flex justify-between items-center mb-12 relative z-50">
+        <div class="flex items-center gap-3">
+            <i data-lucide="sparkles" class="w-6 h-6 sys-title"></i>
+            <span class="text-2xl font-bold sys-title">COSMIC</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="index.html" class="sys-title font-bold text-sm">HUB</a>
+            <a href="shop.html" class="sys-sub hover:opacity-80 font-bold text-sm transition">SHOP</a>
+            
+            <div class="relative">
+                <button onclick="toggleThemeMenu()" class="sys-btn px-5 py-2 text-xs flex items-center gap-2">
+                    <i data-lucide="palette" class="w-4 h-4"></i> THEME
+                </button>
+                <div id="theme-menu" class="sys-dropdown absolute right-0 mt-3 w-48 flex-col hidden overflow-hidden shadow-2xl">
+                    <button onclick="setTheme('theme-cosmic')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10">Default</button>
+                    <button onclick="setTheme('theme-aero')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10 border-t border-white/5">Frutiger Aero</button>
+                    <button onclick="setTheme('theme-ios')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10 border-t border-white/5">Glass Blur</button>
+                    <button onclick="setTheme('theme-surprise')" class="sys-dropdown-btn w-full text-left px-5 py-3 text-sm transition hover:bg-white/10 border-t border-white/5 text-blue-400 font-bold">???</button>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <main class="max-w-4xl mx-auto px-6 pt-20 pb-24 text-center">
-        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-            Reliable <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Execution</span>
-        </h1>
-        <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-            High-performance scripts built for stability and efficiency. Optimized logic for your favorite games.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="gateway.html" class="btn-gradient px-8 py-4 rounded-2xl font-bold text-white uppercase tracking-wide flex items-center justify-center">
-                Get Access Key
-            </a>
-            <button onclick="window.open('https://discord.gg/SexKW4Fq5Z', '_blank')" class="glass-panel px-8 py-4 rounded-2xl font-bold text-white uppercase tracking-wide discord-glow flex items-center justify-center gap-2">
-                <span>Join Discord</span>
-                <i data-lucide="message-square" class="w-5 h-5"></i>
-            </button>
+    <!-- Header -->
+    <header class="max-w-4xl mx-auto px-6 text-center mb-20">
+        <h1 class="text-5xl md:text-7xl font-bold sys-title mb-6 tracking-tight">Evolved Scripting.</h1>
+        <p class="text-lg sys-sub max-w-2xl mx-auto font-medium">Clean interfaces, zero keys, maximum performance.</p>
+    </header>
+
+    <!-- Script Grid -->
+    <main class="max-w-6xl mx-auto px-6 pb-32">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="sys-card flex flex-col">
+                <h3 class="text-2xl font-bold sys-title mb-2">Invisibility</h3>
+                <p class="sys-sub text-sm flex-grow">Advanced character concealment script. Total bypass for visibility checks.</p>
+                <div class="sys-badge mt-6 mb-4 break-all" id="script-invis">loadstring(game:HttpGet("https://raw.githubusercontent.com/Sksheheheuwnanajaj/cosmic/refs/heads/main/Invis.txt"))()</div>
+                <button onclick="copyScript('script-invis', this)" class="sys-btn w-full py-3.5 text-xs font-bold tracking-widest uppercase">Copy Script</button>
+            </div>
+
+            <div class="sys-card flex flex-col">
+                <h3 class="text-2xl font-bold sys-title mb-2">Semi TP</h3>
+                <p class="sys-sub text-sm flex-grow">Reliable teleportation with smooth interpolation and distance checks.</p>
+                <div class="sys-badge mt-6 mb-4 break-all" id="script-semi">loadstring(game:HttpGet("https://raw.githubusercontent.com/Sksheheheuwnanajaj/cosmic/refs/heads/main/tp.lua"))()</div>
+                <button onclick="copyScript('script-semi', this)" class="sys-btn w-full py-3.5 text-xs font-bold tracking-widest uppercase">Copy Script</button>
+            </div>
+
+            <div class="sys-card flex flex-col">
+                <h3 class="text-2xl font-bold sys-title mb-2">Duels</h3>
+                <p class="sys-sub text-sm flex-grow">Combat utility suite for 1v1 arenas. Optimized tracking and speed.</p>
+                <div class="sys-badge mt-6 mb-4 break-all" id="script-duels">loadstring(game:HttpGet("https://raw.githubusercontent.com/Sksheheheuwnanajaj/cosmic/refs/heads/main/duels.lua"))()</div>
+                <button onclick="copyScript('script-duels', this)" class="sys-btn w-full py-3.5 text-xs font-bold tracking-widest uppercase">Copy Script</button>
+            </div>
+
         </div>
     </main>
 
-    <!-- Scripts Section -->
-    <section class="max-w-6xl mx-auto px-6 pb-24">
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <!-- Invisibility -->
-            <div class="glass-panel p-8 rounded-3xl flex flex-col border-indigo-500/20 bg-indigo-500/5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold">Invisibility</h3>
-                    <span class="text-[10px] font-bold text-indigo-400 bg-indigo-400/10 px-2 py-1 rounded uppercase">Active</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 flex-1">
-                    Advanced character transparency utility. Designed to remain undetected during active sessions.
-                </p>
-                <div class="script-container">
-                    <div class="script-box" id="script-invis">loadstring(game:HttpGet("https://raw.githubusercontent.com/Sksheheheuwnanajaj/cosmic/refs/heads/main/Invis.txt"))()</div>
-                    <button onclick="copyScript('script-invis', this)" class="w-full py-2 bg-indigo-500/20 hover:bg-indigo-500 text-indigo-300 hover:text-white rounded-lg text-xs font-bold transition">
-                        COPY SCRIPT
-                    </button>
-                </div>
-            </div>
-
-            <!-- Semi TP -->
-            <div class="glass-panel p-8 rounded-3xl flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold">Semi TP</h3>
-                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded uppercase">Active</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 flex-1">
-                    Lightweight teleportation utility optimized for bypassing standard movement checks.
-                </p>
-                <div class="script-container">
-                    <div class="script-box" id="script-semi">loadstring(game:HttpGet("https://pastefy.app/pb8tINkL/raw"))()</div>
-                    <button onclick="copyScript('script-semi', this)" class="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white rounded-lg text-xs font-bold transition">
-                        COPY SCRIPT
-                    </button>
-                </div>
-            </div>
-
-            <!-- Duels -->
-            <div class="glass-panel p-8 rounded-3xl flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold">Duels</h3>
-                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded uppercase">Active</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 flex-1">
-                    Combat enhancement suite featuring bypassed speed adjustment and movement tracking.
-                </p>
-                <div class="script-container">
-                    <div class="script-box" id="script-duels">loadstring(game:HttpGet("https://pastefy.app/Yx9A0D7H/raw"))()</div>
-                    <button onclick="copyScript('script-duels', this)" class="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white rounded-lg text-xs font-bold transition">
-                        COPY SCRIPT
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="p-12 text-center border-t border-white/5">
-        <div class="text-gray-500 text-sm mb-4 italic">"Focus on the code, the rest follows."</div>
-        <div class="text-gray-600 text-xs tracking-widest uppercase">&copy; 2026 Cosmic Systems</div>
-    </footer>
+    <footer class="pb-20 opacity-30 text-center text-[10px] font-bold uppercase tracking-[0.5em]">Cosmic v2.5.0</footer>
 
     <script>
+        function setTheme(theme) {
+            document.body.classList.remove('theme-cosmic', 'theme-aero', 'theme-ios', 'theme-surprise');
+            document.body.classList.add(theme);
+            localStorage.setItem('cosmic-active-theme', theme);
+            document.getElementById('theme-menu').classList.add('hidden');
+        }
+
+        function toggleThemeMenu() { document.getElementById('theme-menu').classList.toggle('hidden'); }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) document.getElementById('theme-menu').classList.add('hidden');
+        });
+
+        const savedTheme = localStorage.getItem('cosmic-active-theme') || 'theme-cosmic';
+        document.body.classList.remove('theme-cosmic');
+        document.body.classList.add(savedTheme);
+
         function copyScript(id, btn) {
             const text = document.getElementById(id).innerText;
             const temp = document.createElement('textarea');
-            temp.value = text;
-            document.body.appendChild(temp);
-            temp.select();
-            document.execCommand('copy');
-            document.body.removeChild(temp);
-
-            const oldText = btn.innerText;
-            btn.innerText = 'COPIED TO CLIPBOARD';
-            btn.style.background = '#10b981';
-            btn.style.color = 'white';
-            setTimeout(() => {
-                btn.innerText = oldText;
-                btn.style.background = '';
-                btn.style.color = '';
-            }, 2000);
+            temp.value = text; document.body.appendChild(temp);
+            temp.select(); document.execCommand('copy'); document.body.removeChild(temp);
+            const old = btn.innerText; btn.innerText = 'COPIED!';
+            setTimeout(() => btn.innerText = old, 1500);
         }
 
         lucide.createIcons();
     </script>
 </body>
 </html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic | Script Hub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            background-color: #030305; 
-            color: #ffffff; 
-            font-family: 'Space Grotesk', sans-serif; 
-            margin: 0;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, #030305 80%);
-        }
-
-        .glass-panel {
-            background: rgba(15, 15, 20, 0.4);
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic | Script Hub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            background-color: #030305; 
-            color: #ffffff; 
-            font-family: 'Space Grotesk', sans-serif; 
-            margin: 0;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #0f172a 0%, #030305 80%);
-        }
-
-        .glass-panel {
-            background: rgba(15, 15, 20, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-        
-        .glass-panel:hover {
-            border-color: rgba(139, 92, 246, 0.3);
-            background: rgba(15, 15, 20, 0.6);
-        }
-
-        .btn-gradient {
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            transition: all 0.3s ease;
-        }
-
-        .btn-gradient:hover {
-            filter: brightness(1.1);
-            transform: translateY(-1px);
-            box-shadow: 0 10px 20px -10px rgba(168, 85, 247, 0.5);
-        }
-
-        .script-container {
-            background: #000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 12px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .script-box {
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
-            color: #a78bfa;
-            word-break: break-all;
-            white-space: pre-wrap;
-            background: transparent;
-            border: none;
-            width: 100%;
-        }
-
-        .discord-glow {
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.1);
-            border: 1px solid rgba(88, 101, 242, 0.3);
-            cursor: pointer;
-        }
-        
-        .discord-glow:hover {
-            background: rgba(88, 101, 242, 0.15);
-            box-shadow: 0 0 30px rgba(88, 101, 242, 0.3);
-        }
-
-        .shop-nav-btn {
-            background: rgba(168, 85, 247, 0.1);
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .shop-nav-btn:hover {
-            background: rgba(168, 85, 247, 0.2);
-            border-color: rgba(168, 85, 247, 0.5);
-            transform: scale(1.05);
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-    </style>
-</head>
-<body class="min-h-screen scrollbar-hide">
-
-    <!-- Navbar -->
-    <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center relative z-50">
-        <div class="text-2xl font-bold tracking-tighter">COSMIC</div>
-        <div class="flex items-center gap-4">
-            <a href="https://cosmicsys.vercel.app/shop.html" class="shop-nav-btn flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-purple-300 transition">
-                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">MARKETPLACE</span>
-            </a>
-            <a href="https://discord.gg/SexKW4Fq5Z" target="_blank" class="hidden sm:flex items-center gap-2 text-sm text-gray-400 hover:text-white transition">
-                Discord
-            </a>
-            <a href="gateway.html" class="px-5 py-2 rounded-xl text-sm font-semibold glass-panel hover:bg-white/10 transition">
-                Get Key
-            </a>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <main class="max-w-4xl mx-auto px-6 pt-20 pb-24 text-center">
-        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-            Reliable <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Execution</span>
-        </h1>
-        <p class="text-gray-400 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-            High-performance scripts built for stability and efficiency. Optimized logic for your favorite games.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="gateway.html" class="btn-gradient px-8 py-4 rounded-2xl font-bold text-white uppercase tracking-wide flex items-center justify-center">
-                Get Access Key
-            </a>
-            <button onclick="window.open('https://discord.gg/SexKW4Fq5Z', '_blank')" class="glass-panel px-8 py-4 rounded-2xl font-bold text-white uppercase tracking-wide discord-glow flex items-center justify-center gap-2">
-                <span>Join Discord</span>
-                <i data-lucide="message-square" class="w-5 h-5"></i>
-            </button>
-        </div>
-    </main>
-
-    <!-- Scripts Section -->
-    <section class="max-w-6xl mx-auto px-6 pb-24">
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <!-- Invisibility -->
-            <div class="glass-panel p-8 rounded-3xl flex flex-col border-indigo-500/20 bg-indigo-500/5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-white">Invisibility</h3>
-                    <span class="text-[10px] font-bold text-indigo-400 bg-indigo-400/10 px-2 py-1 rounded uppercase">Active</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 flex-1">
-                    Advanced character transparency utility. Designed to remain undetected during active sessions.
-                </p>
-                <div class="script-container">
-                    <div class="script-box" id="script-invis">loadstring(game:HttpGet("https://raw.githubusercontent.com/Sksheheheuwnanajaj/cosmic/refs/heads/main/Invis.txt"))()</div>
-                    <button onclick="copyScript('script-invis', this)" class="w-full py-2 bg-indigo-500/20 hover:bg-indigo-500 text-indigo-300 hover:text-white rounded-lg text-xs font-bold transition">
-                        COPY SCRIPT
-                    </button>
-                </div>
-            </div>
-
-            <!-- Semi TP -->
-            <div class="glass-panel p-8 rounded-3xl flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-white">Semi TP</h3>
-                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded uppercase">Active</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 flex-1">
-                    Lightweight teleportation utility optimized for bypassing standard movement checks.
-                </p>
-                <div class="script-container">
-                    <div class="script-box" id="script-semi">loadstring(game:HttpGet("https://pastefy.app/pb8tINkL/raw"))()</div>
-                    <button onclick="copyScript('script-semi', this)" class="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white rounded-lg text-xs font-bold transition">
-                        COPY SCRIPT
-                    </button>
-                </div>
-            </div>
-
-            <!-- Duels -->
-            <div class="glass-panel p-8 rounded-3xl flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-white">Duels</h3>
-                    <span class="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded uppercase">Active</span>
-                </div>
-                <p class="text-gray-400 text-sm mb-6 flex-1">
-                    Combat enhancement suite featuring bypassed speed adjustment and movement tracking.
-                </p>
-                <div class="script-container">
-                    <div class="script-box" id="script-duels">loadstring(game:HttpGet("https://pastefy.app/Yx9A0D7H/raw"))()</div>
-                    <button onclick="copyScript('script-duels', this)" class="w-full py-2 bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white rounded-lg text-xs font-bold transition">
-                        COPY SCRIPT
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="p-12 text-center border-t border-white/5">
-        <div class="text-gray-500 text-sm mb-4 italic">"Focus on the code, the rest follows."</div>
-        <div class="text-gray-600 text-xs tracking-widest uppercase">&copy; 2026 Cosmic Systems</div>
-    </footer>
-
-    <script>
-        function copyScript(id, btn) {
-            const text = document.getElementById(id).innerText;
-            const temp = document.createElement('textarea');
-            temp.value = text;
-            document.body.appendChild(temp);
-            temp.select();
-            document.execCommand('copy');
-            document.body.removeChild(temp);
-
-            const oldText = btn.innerText;
-            btn.innerText = 'COPIED TO CLIPBOARD';
-            btn.style.background = '#10b981';
-            btn.style.color = 'white';
-            setTimeout(() => {
-                btn.innerText = oldText;
-                btn.style.background = '';
-                btn.style.color = '';
-            }, 2000);
-        }
-
-        lucide.createIcons();
-    </script>
-</body>
-</html>
-
-
