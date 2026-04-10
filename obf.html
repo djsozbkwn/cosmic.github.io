@@ -1,0 +1,412 @@
+
+import React, { useState, useRef, useEffect } from 'react';
+import { UploadCloud, Download, Sparkles, FileText, Trash2, ShieldAlert, Cpu, Lock, Terminal, Zap } from 'lucide-react';
+
+const App = () => {
+  const [inputCode, setInputCode] = useState('');
+  const [outputCode, setOutputCode] = useState('');
+  const [fileName, setFileName] = useState('premium_script.lua');
+  const [isDragging, setIsDragging] = useState(false);
+  const [isObfuscating, setIsObfuscating] = useState(false);
+  const [securityLog, setSecurityLog] = useState([]);
+  const fileInputRef = useRef(null);
+  const logEndRef = useRef(null);
+
+  const addLog = (msg) => {
+    setSecurityLog(prev => [...prev, `[${new Date().toISOString().split('T')[1].slice(0, -1)}] ${msg}`]);
+  };
+
+  useEffect(() => {
+    if (logEndRef.current) {
+      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [securityLog]);
+
+  // Generates extreme opaque names
+  const generateOpaqueName = (length = 16) => {
+    const chars = ['I', 'l', 'O', '0'];
+    let result = chars[Math.floor(Math.random() * 2)]; // Start with letter
+    for (let i = 1; i < length; i++) {
+      result += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return '_' + result;
+  };
+
+  const handleObfuscate = () => {
+    if (!inputCode.trim()) return;
+    setIsObfuscating(true);
+    setSecurityLog([]);
+    addLog("INITIATING COSMIC V3 SECURE PACKER...");
+
+    setTimeout(() => {
+      addLog("Analyzing payload entropy...");
+      let codeToEncode = inputCode;
+      
+      addLog("Generating fragmented encryption matrix...");
+      const key = Math.floor(Math.random() * 200) + 20; // 20-220
+      
+      // Encode & Chunk Payload
+      const chunkSize = Math.floor(Math.random() * 30) + 20;
+      const chunks = [];
+      let currentChunk = [];
+      
+      for (let i = 0; i < codeToEncode.length; i++) {
+        // XOR + Offset mutation
+        let mutated = (codeToEncode.charCodeAt(i) ^ key) + 5;
+        currentChunk.push(mutated);
+        
+        if (currentChunk.length >= chunkSize || i === codeToEncode.length - 1) {
+          chunks.push(`{${currentChunk.join(',')}}`);
+          currentChunk = [];
+        }
+      }
+      
+      addLog(`Payload shattered into ${chunks.length} data blocks.`);
+
+      // Generate variable map
+      const v = {
+        state: generateOpaqueName(),
+        chunks: generateOpaqueName(),
+        buffer: generateOpaqueName(),
+        idx: generateOpaqueName(),
+        chunkIdx: generateOpaqueName(),
+        byteIdx: generateOpaqueName(),
+        env: generateOpaqueName(),
+        concat: generateOpaqueName(),
+        char: generateOpaqueName(),
+        pcall: generateOpaqueName(),
+        load: generateOpaqueName(),
+        key: generateOpaqueName(),
+        str1: generateOpaqueName(),
+        str2: generateOpaqueName(),
+        success: generateOpaqueName(),
+        err: generateOpaqueName(),
+        tamper: generateOpaqueName()
+      };
+
+      addLog("Constructing Control Flow Flattened (CFF) VM Stub...");
+      addLog("Injecting Anti-Tamper & Anti-Format triggers...");
+
+      // Hex string generators for runtime evaluation
+      const getEnvStr = "\\103\\101\\116\\102\\101\\110\\118"; // getfenv
+      const loadStr1 = "\\108\\111\\97\\100\\115\\116\\114\\105\\110\\103"; // loadstring
+      const loadStr2 = "\\108\\111\\97\\100"; // load
+
+      // State machine logic randomized states
+      const s_init = Math.floor(Math.random() * 100) + 10;
+      const s_decode = s_init + Math.floor(Math.random() * 50) + 10;
+      const s_env = s_decode + Math.floor(Math.random() * 50) + 10;
+      const s_exec = s_env + Math.floor(Math.random() * 50) + 10;
+      const s_trap = s_exec + Math.floor(Math.random() * 50) + 10;
+
+      const resultScript = `--[[ COSMIC V3 ENCRYPTION ENGINE ]]--
+local ${v.state} = ${s_init}
+local ${v.chunks}, ${v.buffer}, ${v.env}, ${v.concat}, ${v.char}, ${v.pcall}, ${v.load}
+
+-- CFF Virtual Machine
+while true do
+    if ${v.state} == ${s_init} then
+        -- Fragmented Payload
+        ${v.chunks} = {
+            ${chunks.join(',\n            ')}
+        }
+        ${v.buffer} = {}
+        ${v.char} = string.char
+        ${v.concat} = table.concat
+        ${v.state} = ${s_decode}
+
+    elseif ${v.state} == ${s_trap} then
+        -- Anti-Format Trap
+        local ${v.tamper} = debug and debug.getinfo and debug.getinfo(1).currentline or 0
+        if ${v.tamper} > 100 then while true do end end
+        ${v.state} = ${s_exec}
+
+    elseif ${v.state} == ${s_decode} then
+        -- Decryption Loop
+        local ${v.idx} = 1
+        for ${v.chunkIdx} = 1, #${v.chunks} do
+            for ${v.byteIdx} = 1, #${v.chunks}[${v.chunkIdx}] do
+                -- Reverse offset and XOR
+                local b = ${v.chunks}[${v.chunkIdx}][${v.byteIdx}] - 5
+                local bx = b
+                -- Pure Lua XOR emulation for key: ${key}
+                local res, p = 0, 1
+                local k = ${key}
+                while bx > 0 and k > 0 do
+                    local r1, r2 = bx % 2, k % 2
+                    if r1 ~= r2 then res = res + p end
+                    bx, k, p = (bx - r1) / 2, (k - r2) / 2, p * 2
+                end
+                if bx < k then bx = k end
+                while bx > 0 do
+                    local r1 = bx % 2
+                    if r1 > 0 then res = res + p end
+                    bx, p = (bx - r1) / 2, p * 2
+                end
+                ${v.buffer}[${v.idx}] = ${v.char}(res)
+                ${v.idx} = ${v.idx} + 1
+            end
+        end
+        ${v.state} = ${s_env}
+
+    elseif ${v.state} == ${s_env} then
+        -- Dynamic Env Resolution
+        local g = _G or _ENV
+        if getfenv then g = getfenv() end
+        ${v.pcall} = pcall
+        local ${v.str1} = "${loadStr1}"
+        local ${v.str2} = "${loadStr2}"
+        ${v.load} = g[${v.str1}] or g[${v.str2}]
+        ${v.state} = ${s_trap}
+
+    elseif ${v.state} == ${s_exec} then
+        -- Execution Proxy
+        if type(${v.load}) == "function" then
+            local ${v.success}, ${v.err} = ${v.pcall}(${v.load}(${v.concat}(${v.buffer})))
+            if not ${v.success} then
+                math.randomseed(os.time())
+                while true do math.random() end
+            end
+        end
+        break
+    end
+end
+`;
+
+      setOutputCode(resultScript);
+      addLog("OBFUSCATION COMPLETE. SCRIPT IS READY FOR DEPLOYMENT.");
+      setIsObfuscating(false);
+    }, 2000); 
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setInputCode(e.target.result);
+    };
+    reader.readAsText(file);
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const onDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && (file.name.endsWith('.txt') || file.name.endsWith('.lua'))) {
+      setFileName(file.name);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setInputCode(e.target.result);
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!outputCode) return;
+    const blob = new Blob([outputCode], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    
+    const nameParts = fileName.split('.');
+    const ext = nameParts.pop();
+    const baseName = nameParts.join('.');
+    a.download = `${baseName}_cosmicV3.${ext}`;
+    
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const clearWorkspace = () => {
+    setInputCode('');
+    setOutputCode('');
+    setSecurityLog([]);
+    setFileName('premium_script.lua');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  return (
+    <div className="min-h-screen bg-[#050505] text-slate-300 font-sans selection:bg-rose-500/30">
+      
+      {/* Header */}
+      <header className="border-b border-rose-900/30 bg-[#0a0a0f]/90 backdrop-blur-xl sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-600 to-red-900 flex items-center justify-center shadow-[0_0_20px_rgba(225,29,72,0.3)] border border-rose-500/30">
+              <Zap className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-white tracking-tighter">
+                COSMIC <span className="text-rose-500">V3</span>
+              </h1>
+              <p className="text-xs text-rose-200/60 font-mono tracking-widest uppercase">CFF Architecture Active</p>
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center space-x-3 text-xs font-mono px-4 py-2 rounded-lg bg-rose-950/20 border border-rose-900/50 text-rose-400">
+            <ShieldAlert className="w-4 h-4 animate-pulse" />
+            <span>ENTERPRISE PROTECTION</span>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        {/* Left Column: Input */}
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-bold text-slate-400 tracking-widest flex items-center">
+              <FileText className="w-4 h-4 mr-2 text-rose-500" />
+              PROPRIETARY SOURCE
+            </h2>
+            {inputCode && (
+              <button 
+                onClick={clearWorkspace}
+                className="text-xs font-bold flex items-center text-slate-500 hover:text-rose-400 transition-colors uppercase tracking-wider"
+              >
+                <Trash2 className="w-3 h-3 mr-1" /> Purge Matrix
+              </button>
+            )}
+          </div>
+
+          <div 
+            className={`relative flex-grow min-h-[500px] flex flex-col rounded-xl overflow-hidden border transition-all duration-300 ${
+              isDragging ? 'border-rose-500 bg-rose-500/5 shadow-[0_0_30px_rgba(225,29,72,0.15)]' : 'border-slate-800/80 bg-[#0a0a0f]'
+            }`}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+          >
+            {!inputCode ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                <div className="w-24 h-24 rounded-full bg-slate-900/50 border border-slate-800/80 flex items-center justify-center mb-6 shadow-inner">
+                  <UploadCloud className="w-10 h-10 text-slate-600" />
+                </div>
+                <h3 className="text-xl font-black text-white mb-2 tracking-widest">DRAG & DROP</h3>
+                <p className="text-sm text-slate-500 mb-8 max-w-sm leading-relaxed">
+                  Insert .lua or .txt files. Direct code injection into the console is also supported.
+                </p>
+                <input 
+                  type="file" 
+                  accept=".lua,.txt"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  ref={fileInputRef}
+                  id="file-upload"
+                />
+                <label 
+                  htmlFor="file-upload"
+                  className="px-8 py-3 rounded-sm bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs tracking-widest cursor-pointer transition-all border border-slate-600 hover:border-rose-500"
+                >
+                  BROWSE SYSTEM
+                </label>
+              </div>
+            ) : (
+              <textarea
+                value={inputCode}
+                onChange={(e) => setInputCode(e.target.value)}
+                className="w-full h-full min-h-[500px] p-6 bg-transparent border-none outline-none resize-none font-mono text-sm text-slate-300 placeholder-slate-700 focus:ring-0 leading-relaxed"
+                placeholder="Inject code here..."
+                spellCheck="false"
+              />
+            )}
+          </div>
+
+          <button
+            onClick={handleObfuscate}
+            disabled={!inputCode || isObfuscating}
+            className={`w-full py-5 rounded-sm font-black text-sm tracking-widest uppercase transition-all duration-300 flex items-center justify-center ${
+              !inputCode 
+                ? 'bg-[#0a0a0f] text-slate-600 border border-slate-800 cursor-not-allowed' 
+                : 'bg-rose-600 text-white hover:bg-rose-500 shadow-[0_0_25px_rgba(225,29,72,0.4)] active:scale-[0.99]'
+            }`}
+          >
+            {isObfuscating ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                EXECUTING CFF PACKING...
+              </span>
+            ) : (
+              <span className="flex items-center">
+                <Cpu className="w-5 h-5 mr-2" />
+                INITIATE OBFUSCATION
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Right Column: Output & Logs */}
+        <div className="flex flex-col space-y-4">
+          <h2 className="text-xs font-bold text-slate-400 tracking-widest flex items-center">
+            <Lock className="w-4 h-4 mr-2 text-emerald-500" />
+            SECURED ARTIFACT
+          </h2>
+
+          <div className="flex-grow min-h-[350px] flex flex-col rounded-xl overflow-hidden border border-slate-800/80 bg-[#0a0a0f] relative">
+            {!outputCode ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                <Terminal className="w-12 h-12 text-slate-800 mb-4 opacity-50" />
+                <p className="text-slate-600 font-mono text-xs uppercase tracking-widest">Awaiting Artifact</p>
+              </div>
+            ) : (
+              <textarea
+                value={outputCode}
+                readOnly
+                className="w-full h-full min-h-[350px] p-6 bg-transparent border-none outline-none resize-none font-mono text-[11px] text-rose-300/80 focus:ring-0 leading-relaxed"
+                spellCheck="false"
+              />
+            )}
+          </div>
+
+          {/* Security Terminal / Logs */}
+          <div className="h-32 bg-[#050505] border border-slate-800/80 rounded-xl p-4 font-mono text-[10px] sm:text-xs overflow-y-auto flex flex-col space-y-1.5 shadow-inner">
+            {securityLog.length === 0 ? (
+              <span className="text-slate-700 uppercase tracking-widest">Terminal Standby...</span>
+            ) : (
+              securityLog.map((log, index) => (
+                <span key={index} className="text-emerald-500/90">{log}</span>
+              ))
+            )}
+            <div ref={logEndRef} />
+          </div>
+
+          <button
+            onClick={handleDownload}
+            disabled={!outputCode}
+            className={`w-full py-5 rounded-sm font-black text-sm tracking-widest uppercase transition-all flex items-center justify-center ${
+              !outputCode 
+                ? 'bg-[#0a0a0f] text-slate-600 border border-slate-800 cursor-not-allowed' 
+                : 'bg-white text-black hover:bg-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.2)] active:scale-[0.99]'
+            }`}
+          >
+            <Download className="w-5 h-5 mr-2" />
+            EXPORT SECURED SCRIPT
+          </button>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default App;
+
+
+
+
